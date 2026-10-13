@@ -1,8 +1,16 @@
 import { Link } from 'react-router'
 import { GameCard } from '../components/GameCard'
-import { games } from '../data/games'
+// import type { Game, GameStatus } from '../types/game'
+// import { useState } from 'react'
+import type { Game } from '../types/game'
 
-export function GamesPage() {
+type GamesPageProps = { games: Game[] }
+
+export function GamesPage({ games }: GamesPageProps) {
+    // const [status, setStatus] = useState<GameStatus | 'all'>('all')
+    // const visibleGames = games.filter((game) => 
+    //     status === 'all' || game.status === status
+    // )
     return (
         <section>
             <h1>Мои игры</h1>

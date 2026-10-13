@@ -1,11 +1,35 @@
-import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
+import type { GameDraft } from '../types/game'
+import { GameForm } from '../components/GameForm'
 
-export function NewGamePage() {
-    return(
-        <>
-            <h1>Добавление игры</h1>
-            <Link to="/games">К списку игр</Link>
-        </>
-    )
+type NewGamePageProps = {
+    onCreate: (draft: GameDraft) => string
 }
 
+const emptyGame: GameDraft = {
+    title: '',
+    description: '',
+    status: 'unplayed',
+    tag: '',
+}
+
+export function NewGamePage({ onCreate }: NewGamePageProps) {
+    const navigate = useNavigate()
+
+    function handleSave(draft: GameDraft) {
+        const id = onCreate(draft)
+        navigate(`/games/${id}`)
+    }
+
+    return (
+        <section>
+            <h1>Создание игры</h1>
+
+            <GameForm
+                initialValues={emptyGame}
+                onSave={handleSave}
+                onCancel={() => navigate('/games')}
+            />
+        </section>
+    )
+}

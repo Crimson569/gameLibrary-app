@@ -1,6 +1,6 @@
 import type { Game } from "../types/game";
 
-export const games: Game[] = [
+export const initialGames: Game[] = [
   {
     id: '1',
     title: 'Dark Souls 3',

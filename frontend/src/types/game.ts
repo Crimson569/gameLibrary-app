@@ -1,3 +1,4 @@
+export type GameDraft = Omit<Game, 'id'>
 export type GameStatus = 'in_progress' | 'complete' | 'unplayed'
 export type Game = {
  id: string
