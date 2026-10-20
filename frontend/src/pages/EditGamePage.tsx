@@ -14,8 +14,8 @@ export function EditGamePage({ games, onUpdate }: EditGamePageProps) {
     const game = games.find((game) => game.id === id)
     if (!game) {
         return (
-            <section><h1>Задача не найдена</h1>
-                <Link to="/tasks">К списку</Link></section>
+            <section><h1>Игра не найдена</h1>
+                <Link to="/games">К списку</Link></section>
         )
     }
     const initialValue: GameDraft = {

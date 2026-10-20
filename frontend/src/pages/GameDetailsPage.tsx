@@ -23,7 +23,7 @@ export function GameDetailsPage({ games, onDelete }: GameDetailsPageProps) {
             <h1>{game.title}</h1>
             <p>{game.description}</p>
             <p>Статус прохождения: {game.status}</p>
-            <Link to="/games/:id/edit">Редактирование</Link>
+            <Link to={`/games/${game.id}/edit`}>Редактирование</Link>
             <button type="button" onClick={() => {
                 if (window.confirm(`Удалить игру "${game.title}"`)) {
                     onDelete(game.id)
@@ -33,7 +33,7 @@ export function GameDetailsPage({ games, onDelete }: GameDetailsPageProps) {
             }}>
                 Удалить
             </button>
-            <Link to="/games">К списку задач</Link>
+            <Link to="/games">К списку игр</Link>
         </section>
     )
 }

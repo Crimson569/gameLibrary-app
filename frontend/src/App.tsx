@@ -37,7 +37,7 @@ export default function App() {
                 <Route path="games" element={<GamesPage games={games} />} />
                 <Route path="games/new" element={<NewGamePage onCreate={createGame} />} />
                 <Route path="games/:id" element={<GameDetailsPage games={games} onDelete={deleteGame} />} />
-                <Route path="games/:id/delete" element={<EditGamePage games={games} onUpdate={updateGame} />} />
+                <Route path="games/:id/edit" element={<EditGamePage games={games} onUpdate={updateGame} />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
