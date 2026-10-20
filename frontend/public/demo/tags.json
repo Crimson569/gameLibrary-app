@@ -1,0 +1,9 @@
+[
+  { "id": "soulslike", "name": "Souls-like" },
+  { "id": "fps", "name": "FPS" },
+  { "id": "rpg", "name": "RPG" },
+  { "id": "adventure", "name": "Adventure" },
+  { "id": "openworld", "name": "Open World" },
+  { "id": "action", "name": "Action" },
+  { "id": "sandbox", "name": "Sandbox" }
+]
