@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { GameDraft, GameStatus } from '../types/game'
+import { useTags } from '../hooks/useTags'
 
 type GameFormProps = {
     initialValues: GameDraft
@@ -12,10 +13,21 @@ export function GameForm(props: GameFormProps) {
     const [draft, setDraft] = useState<GameDraft>(() => ({
         ...props.initialValues,
     }))
+
     const [error, setError] = useState('')
+
+    const { load, retry } = useTags()
+    const tags = load.status === 'success' ? load.data : []
+    const selectedTagExists = tags.some((tag) => tag.id === draft.tag)
+    const canSave = load.status === 'success' && selectedTagExists
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+
+        if (!canSave) {
+            setError('Дождитесь справочника и выберите доступный тег.')
+            return
+        }
 
         const title = draft.title.trim()
         const description = draft.description.trim()
@@ -72,15 +84,37 @@ export function GameForm(props: GameFormProps) {
                 }
             />
 
-            <label htmlFor="game-tag">Тег</label>
-            <input
-                id="game-tag"
-                value={draft.tag}
-                required
-                onChange={(e) =>
-                    setDraft({ ...draft, tag: e.target.value })
-                }
-            />
+            <label htmlFor="task-tag">Тег</label>
+            <select id="task-tag" value={draft.tag} required
+                disabled={load.status !== 'success' || tags.length === 0}
+                onChange={(event) => setDraft({
+                    ...draft, tag: event.target.value,
+                })}>
+                <option value="">Выберите тег</option>
+                {draft.tag !== '' && !selectedTagExists && (
+                    <option value={draft.tag} disabled>
+                        Текущий код: {draft.tag} — выберите доступный тег
+                    </option>
+                )}
+                {tags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                ))}
+            </select>
+            {load.status === 'loading' && (
+                <p role="status">Загружаем теги…</p>
+            )}
+            {load.status === 'error' && (
+                <div>
+                    <p role="alert">{load.message}</p>
+                    <button type="button" onClick={retry}>Повторить</button>
+                </div>
+            )}
+            {load.status === 'success' && tags.length === 0 && (
+                <div>
+                    <p role="status">Тегов пока нет. Сохранение недоступно.</p>
+                    <button type="button" onClick={retry}>Повторить</button>
+                </div>
+            )}
 
             <label htmlFor="game-status">Статус</label>
             <select
@@ -97,10 +131,8 @@ export function GameForm(props: GameFormProps) {
 
             {error && <p role="alert">{error}</p>}
 
-            <button type="submit">Сохранить</button>
-            <button type="button" onClick={props.onCancel}>
-                Отмена
-            </button>
+            <button type="submit" disabled={!canSave}>Сохранить</button>
+            <button type="button" onClick={props.onCancel}>Отмена</button>
         </form>
     )
 }
