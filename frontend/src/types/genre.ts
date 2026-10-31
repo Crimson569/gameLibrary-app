@@ -1,4 +1,4 @@
-export type Tag = {
+export type Genre = {
     id: string
     name: string
 }

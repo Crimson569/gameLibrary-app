@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react'
-import type { Tag } from '../types/tag'
-import { getTags } from '../services/tags'
+import type { Genre } from '../types/genre'
+import { getGenres } from '../services/genres'
 
-type TagsLoad =
+type GenresLoad =
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'success'; data: Tag[] }
+  | { status: 'success'; data: Genre[] }
 
-export function useTags() {
-  const [load, setLoad] = useState<TagsLoad>({ status: 'loading' })
+export function useGenres() {
+  const [load, setLoad] = useState<GenresLoad>({ status: 'loading' })
   const [attempt, setAttempt] = useState(0)
   useEffect(() => {
   const controller = new AbortController()
   let active = true
   setLoad({ status: 'loading' })
-  getTags(controller.signal)
+  getGenres(controller.signal)
     .then((data) => {
       if (active) setLoad({ status: 'success', data })
     })

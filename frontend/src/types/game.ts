@@ -5,5 +5,5 @@ export type Game = {
  title: string
  description: string
  status: GameStatus
- tag: string
+ genre: string
 }

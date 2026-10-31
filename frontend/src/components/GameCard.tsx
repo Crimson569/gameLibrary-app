@@ -10,7 +10,7 @@ export function GameCard({ game }: GameCardProps) {
                 <Link to={`/games/${game.id}`}>{game.title}</Link>
             </h2>
             <p>{game.description}</p>
-            <p>Тег: {game.tag}</p>
+            <p>Жанр: {game.genre}</p>
             <p>Статус прохождения: {game.status}</p>
         </article>
     )

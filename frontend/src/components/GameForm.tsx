@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { GameDraft, GameStatus } from '../types/game'
-import { useTags } from '../hooks/useTags'
+import { useGenres } from '../hooks/useGenres'
 
 type GameFormProps = {
     initialValues: GameDraft
@@ -16,22 +16,22 @@ export function GameForm(props: GameFormProps) {
 
     const [error, setError] = useState('')
 
-    const { load, retry } = useTags()
-    const tags = load.status === 'success' ? load.data : []
-    const selectedTagExists = tags.some((tag) => tag.id === draft.tag)
-    const canSave = load.status === 'success' && selectedTagExists
+    const { load, retry } = useGenres()
+    const genres = load.status === 'success' ? load.data : []
+    const selectedGenreExists = genres.some((genre) => genre.id === draft.genre)
+    const canSave = load.status === 'success' && selectedGenreExists
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
 
         if (!canSave) {
-            setError('Дождитесь справочника и выберите доступный тег.')
+            setError('Дождитесь справочника и выберите доступный жанр.')
             return
         }
 
         const title = draft.title.trim()
         const description = draft.description.trim()
-        const tag = draft.tag.trim()
+        const genre = draft.genre.trim()
 
         if (title.length < 3 || title.length > 100) {
             setError('Название должно содержать от 3 до 100 символов.')
@@ -43,8 +43,8 @@ export function GameForm(props: GameFormProps) {
             return
         }
 
-        if (!tag) {
-            setError('Укажите тег игры.')
+        if (!genre) {
+            setError('Укажите жанр игры.')
             return
         }
 
@@ -54,7 +54,7 @@ export function GameForm(props: GameFormProps) {
             ...draft,
             title,
             description,
-            tag,
+            genre: genre,
         })
     }
 
@@ -84,24 +84,24 @@ export function GameForm(props: GameFormProps) {
                 }
             />
 
-            <label htmlFor="task-tag">Тег</label>
-            <select id="task-tag" value={draft.tag} required
-                disabled={load.status !== 'success' || tags.length === 0}
+            <label htmlFor="game-genre">Жанр</label>
+            <select id="game-genre" value={draft.genre} required
+                disabled={load.status !== 'success' || genres.length === 0}
                 onChange={(event) => setDraft({
-                    ...draft, tag: event.target.value,
+                    ...draft, genre: event.target.value,
                 })}>
-                <option value="">Выберите тег</option>
-                {draft.tag !== '' && !selectedTagExists && (
-                    <option value={draft.tag} disabled>
-                        Текущий код: {draft.tag} — выберите доступный тег
+                <option value="">Выберите жанр</option>
+                {draft.genre !== '' && !selectedGenreExists && (
+                    <option value={draft.genre} disabled>
+                        Текущий код: {draft.genre} — выберите доступный жанр
                     </option>
                 )}
-                {tags.map((tag) => (
-                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                {genres.map((genre) => (
+                    <option key={genre.id} value={genre.id}>{genre.name}</option>
                 ))}
             </select>
             {load.status === 'loading' && (
-                <p role="status">Загружаем теги…</p>
+                <p role="status">Загружаем жанры…</p>
             )}
             {load.status === 'error' && (
                 <div>
@@ -109,9 +109,13 @@ export function GameForm(props: GameFormProps) {
                     <button type="button" onClick={retry}>Повторить</button>
                 </div>
             )}
-            {load.status === 'success' && tags.length === 0 && (
+            <button type="button" onClick={retry}
+                disabled={load.status === 'loading'}>
+                Обновить справочник
+            </button>
+            {load.status === 'success' && genres.length === 0 && (
                 <div>
-                    <p role="status">Тегов пока нет. Сохранение недоступно.</p>
+                    <p role="status">Жанров пока нет. Сохранение недоступно.</p>
                     <button type="button" onClick={retry}>Повторить</button>
                 </div>
             )}
