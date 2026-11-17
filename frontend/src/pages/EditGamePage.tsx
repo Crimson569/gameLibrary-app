@@ -5,7 +5,7 @@ import type { Game } from '../types/game'
 
 type EditGamePageProps = {
     games: Game[]
-    onUpdate: (id: string, draft: GameDraft) => void
+    onUpdate: (id: string, draft: GameDraft) => Promise<void>
 }
 
 export function EditGamePage({ games, onUpdate }: EditGamePageProps) {
@@ -20,15 +20,15 @@ export function EditGamePage({ games, onUpdate }: EditGamePageProps) {
     }
     const initialValue: GameDraft = {
         title: game.title, description: game.description,
-        status: game.status, tag: game.tag
+        status: game.status, genre: game.genre
     }
     return (
         <section>
             <h1>Редактирование игры</h1>
             <GameForm key={game.id}
                 initialValues={initialValue}
-                onSave={(draft) => {
-                    onUpdate(game.id, draft)
+                onSave={async (draft) => {
+                    await onUpdate(game.id, draft)
                     navigate(`/games/${game.id}`)
                 }}
                 onCancel={() => navigate(`/games/${game.id}`)} />
@@ -36,4 +36,3 @@ export function EditGamePage({ games, onUpdate }: EditGamePageProps) {
     )
 
 }
-

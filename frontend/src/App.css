@@ -288,3 +288,79 @@ a:focus-visible {
         transition: none !important;
     }
 }
+
+/* ---------- Страница авторизации ---------- */
+
+:root {
+    --green: #3ecf8e;
+}
+
+.auth-form {
+    max-width: 420px;
+}
+
+.auth-form h1 {
+    margin: 0;
+}
+
+/* Переключатель «Вход / Регистрация» */
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Селектор длиннее, чем «form button[type="button"]», чтобы перебить его */
+form .auth-tabs button[type="button"] {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: transparent;
+}
+
+form .auth-tabs button[type="button"]:hover {
+    color: #fff;
+    background: var(--surface-hover);
+    border-color: transparent;
+}
+
+form .auth-tabs button[type="button"].active {
+    color: #fff;
+    background: var(--red);
+    border-color: var(--red);
+}
+
+form .auth-tabs button[type="button"].active:hover {
+    background: var(--red-dark);
+    border-color: var(--red-dark);
+}
+
+/* Сообщения */
+.auth-error,
+.auth-success {
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    border: 1px solid;
+    border-radius: 8px;
+}
+
+.auth-error {
+    color: var(--red-light);
+    background: rgba(225, 29, 46, 0.1);
+    border-color: var(--red);
+}
+
+.auth-success {
+    color: var(--green);
+    background: rgba(62, 207, 142, 0.1);
+    border-color: var(--green);
+}
+
+.auth-submit {
+    width: 100%;
+    padding: 10px 16px;
+}

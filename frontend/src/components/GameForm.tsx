@@ -5,11 +5,14 @@ import { useGenres } from '../hooks/useGenres'
 
 type GameFormProps = {
     initialValues: GameDraft
-    onSave: (draft: GameDraft) => void
+    onSave: (draft: GameDraft) => Promise<void>
     onCancel: () => void
 }
 
 export function GameForm(props: GameFormProps) {
+    const [pending, setPending] = useState(false)
+    const [submitError, setSubmitError] = useState('')
+
     const [draft, setDraft] = useState<GameDraft>(() => ({
         ...props.initialValues,
     }))
@@ -21,8 +24,9 @@ export function GameForm(props: GameFormProps) {
     const selectedGenreExists = genres.some((genre) => genre.id === draft.genre)
     const canSave = load.status === 'success' && selectedGenreExists
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        if (pending) return
 
         if (!canSave) {
             setError('Дождитесь справочника и выберите доступный жанр.')
@@ -50,12 +54,15 @@ export function GameForm(props: GameFormProps) {
 
         setError('')
 
-        props.onSave({
-            ...draft,
-            title,
-            description,
-            genre: genre,
-        })
+        try {
+            setPending(true)
+            setSubmitError('')
+            await props.onSave({ ...draft, title, description, genre })
+        } catch (err: unknown) {
+            setSubmitError(err instanceof Error ? err.message : 'Не удалось сохранить запись.')
+        } finally {
+            setPending(false)
+        }
     }
 
     function handleStatusChange(status: GameStatus) {
@@ -134,9 +141,12 @@ export function GameForm(props: GameFormProps) {
             </select>
 
             {error && <p role="alert">{error}</p>}
+            {submitError && <p role="alert">{submitError}</p>}
 
-            <button type="submit" disabled={!canSave}>Сохранить</button>
-            <button type="button" onClick={props.onCancel}>Отмена</button>
+            <button type="submit" disabled={!canSave || pending}>
+                {pending ? 'Сохраняем…' : submitError ? 'Повторить' : 'Сохранить'}
+            </button>
+            <button type="button" onClick={props.onCancel} disabled={pending}>Отмена</button>
         </form>
     )
 }
